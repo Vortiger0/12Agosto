@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{titulo}}</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    {{> titulo }}
+    <div class="productos">
+        <img src="/imagenes/{{juego.imagen}}" alt="" class="img1">
+        <h2>{{juego.nombre}}</h2> 
+         <h3>{{juego.precio}}$</h3>
+        <p>{{juego.descripcion}}</p>
+        <a href="/">Volver</a>
+    </div>
+   
+</body>
+</html>

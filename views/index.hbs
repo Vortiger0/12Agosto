@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{titulo}}</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    {{> titulo }}
+    <div class="ProductosIndex">
+        {{#each juegos}}
+        <div class="productos">
+            <img src="/imagenes/{{imagen}}" alt="" class="img1">
+            <h2>{{nombre}}</h2>
+            <h3>{{precio}}$</h3>
+            <a href="/{{id}}">Ver detalles</a>
+            <a href="/{{id}}/editar">Editar</a>
+            <form action="/{{id}}/borrar" method="POST" style="display:inline;">
+                <button type="submit">Borrar</button>
+            </form>
+        </div>
+        {{/each}}
+    </div>
+  
+</body>
+</html>
