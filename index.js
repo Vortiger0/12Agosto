@@ -1,7 +1,58 @@
-import { servidor } from './config.js';
-import express from 'express';
+import { servidor, connection } from './config.js';
 import bcrypt from 'bcryptjs'; 
 import validator from 'validator';
+
+
+
+servidor.get('/registro', (req, res) => {
+  res.render("registro.hbs", { titulo: "Registro" });
+});
+
+servidor.post("/registro", async (req, res) => {
+  console.log("Datos recibidos:", req.body);
+  const { nombre, correo, contra, repite_contra } = req.body;
+  // validar nombre
+  //.trim evita espacios en blanco al inicio y al final de un texto
+  if (!nombre || nombre.trim().length === 0) {
+    return res.status(400).json({ error: "El nombre es obligatorio" });
+  }
+
+  // validar email
+  if (!validator.isEmail(correo)) {
+    return res.status(400).json({ error: "Correo inválido" });
+  }
+  // validar contraseña 
+   if (!contra || contra.length < 6) {
+    return res.status(400).json({ error: "La contraseña es obligatoria y debe tener al menos 6 caracteres" });
+  }
+
+  // validar repetición de contraseña
+  if (contra !== repite_contra) {
+    return res.status(400).json({ error: "Las contraseñas no coinciden" });
+  }
+ 
+  try {
+    // encriptar contraseña
+    const hash = await bcrypt.hash(contra, 10);
+
+    // insertar en la base de datos
+    await connection.query(
+      //? evita inyeccion sql
+      "INSERT INTO usuarios (nombre, correo, contra) VALUES (?, ?, ?)",
+      [nombre, correo, hash]
+    );
+
+    res.redirect('/login');
+
+  } catch (err) {
+    console.error("Error al registrar usuario:", err);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+servidor.get('/login', (req, res) => {
+  res.render("login.hbs", { titulo: "Login" });
+});
 
 let juegos = [
   { id: 1, nombre: "Juego 1", precio: 650, descripcion: "Descripción 1", imagen: "zteam.png" },
@@ -21,13 +72,8 @@ const carrito = [
 ]; 
 */
 
-//toma los name de form.hbs y los convierte en un objeto
-//que es guardado por req.body
-servidor.use(express.urlencoded({ extended: true }));
-
 servidor.get('/', (req, res) => {
   //cuando renderiza index.hbs le pasa un objeto que muestra los juegos
-  //además del título que es lo que se va a mostrar como nombre de la pag
   res.render("index.hbs", { titulo: "Zteam", juegos  }); 
  
 });
@@ -40,14 +86,10 @@ servidor.get('/nuevo', (req, res) => {
 
 servidor.post('/nuevo', (req, res) => {
   //el id se genera con los milisegundos actuales
-  //esto asegura que cada id sea único porque no se
-  //enviarán dos id al mismo tiempo
   const nuevo = { ...req.body, id: Date.now() };
   //se agrega el objeto "nuevo" al array de juegos
   //el cual contiene los datos del req.body y un id único
   juegos.push(nuevo);
-  //una vez creado el juego se reenvia 
-  //al usuario a la pagina principal
   res.redirect('/');
   //console.log(req.body);
 });
@@ -87,10 +129,3 @@ servidor.post('/:id/borrar', (req, res) => {
   res.redirect('/');
 });
 
-servidor.post("/registro", async (req, res) => {
-  const { nombre, apellido, correo, contra } = req.body;
-  console.log(validator.isEmail(correo));
-  const hash = await bcrypt.hash(contra, 10);
-  const usuario = { nombre, apellido, correo, contra: hash };
-  res.json(usuario);
-});
