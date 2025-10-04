@@ -22,6 +22,7 @@ const servidor = express()
 servidor.use(express.static(publicPath));
 servidor.use(express.json());
 servidor.use(express.urlencoded({ extended: true }));
+servidor.use(express.static(path.join(__dirname,"node_modules/bootstrap/dist")));
 
 let pagina = path.join(__dirname, "views");
 servidor.set("views", pagina);

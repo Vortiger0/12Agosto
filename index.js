@@ -14,21 +14,21 @@ servidor.post("/registro", async (req, res) => {
   // validar nombre
   //.trim evita espacios en blanco al inicio y al final de un texto
   if (!nombre || nombre.trim().length === 0) {
-    return res.status(400).json({ error: "El nombre es obligatorio" });
+    return res.render("registro.hbs", { titulo: "Registro", error: "Debes ingresar un nombre válido" });
   }
 
   // validar email
   if (!validator.isEmail(correo)) {
-    return res.status(400).json({ error: "Correo inválido" });
+    return res.render("registro.hbs", { titulo: "Registro", error: "Debes ingresar un correo electrónico válido" });
   }
   // validar contraseña 
    if (!contra || contra.length < 6) {
-    return res.status(400).json({ error: "La contraseña es obligatoria y debe tener al menos 6 caracteres" });
+    return res.render("registro.hbs", { titulo: "Registro", error: "Debes ingresar una contraseña válida" });
   }
 
   // validar repetición de contraseña
   if (contra !== repite_contra) {
-    return res.status(400).json({ error: "Las contraseñas no coinciden" });
+    return res.render("registro.hbs", { titulo: "Registro", error: "Las contraseñas no coinciden" });
   }
  
   try {
@@ -46,7 +46,7 @@ servidor.post("/registro", async (req, res) => {
 
   } catch (err) {
     console.error("Error al registrar usuario:", err);
-    res.status(500).json({ error: "Error interno del servidor" });
+    res.render("registro.hbs", { titulo: "Registro", error: "El correo ya está en uso o error interno" });
   }
 });
 

@@ -11,18 +11,53 @@
 </head>
 <body>
     <div class="titulo">
+
         <div class="boton">
-            <button class="boton_menu">
+        <div class="desplegable dropdown">
+            <button class="boton_menu" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="/imagenes/zteam.png" class="boton_menu2">
             </button>
+
+            <ul class="dropdown-menu" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="/perfil">Perfil</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Cerrar sesión</a></li>
+            </ul>
         </div>
+    </div>
+
+        
+ 
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cerrar sesión</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Seguro que deseas cerrar sesión?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogout">Cerrar sesión</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+            <script src="/js/bootstrap.bundle.min.js"></script>
+            <script>
+            document.getElementById('confirmLogout').onclick = function() {
+            window.location.href = '/login';
+            };
+            </script>
         <h1 class="el_titulo">Zteam </h1>
         <nav class="menu"> 
         <button class="botones"> <a href="/" class="subrayado"> Inicio </a>  </button>
 
         <button class="botones"> <a href="/nuevo" class="subrayado">Nuevo juego </a></button>
         </nav>
-    </div>
-  
+    </div> 
 </body>
 </html>
