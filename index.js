@@ -1,6 +1,5 @@
-import { servidor, connection } from './config.js';
-import bcrypt from 'bcryptjs'; 
-import validator from 'validator';
+import { servidor } from './config.js';
+import { validaciones } from './funciones/validaciones.js';
 
 
 
@@ -8,69 +7,25 @@ servidor.get('/registro', (req, res) => {
   res.render("registro.hbs", { titulo: "Registro" });
 });
 
-servidor.post("/registro", async (req, res) => {
-  console.log("Datos recibidos:", req.body);
-  const { nombre, correo, contra, repite_contra } = req.body;
-  // validar nombre
-  //.trim evita espacios en blanco al inicio y al final de un texto
-  if (!nombre || nombre.trim().length === 0) {
-    return res.render("registro.hbs", { titulo: "Registro", error: "Debes ingresar un nombre válido" });
-  }
-
-  // validar email
-  if (!validator.isEmail(correo)) {
-    return res.render("registro.hbs", { titulo: "Registro", error: "Debes ingresar un correo electrónico válido" });
-  }
-  // validar contraseña 
-   if (!contra || contra.length < 6) {
-    return res.render("registro.hbs", { titulo: "Registro", error: "Debes ingresar una contraseña válida" });
-  }
-
-  // validar repetición de contraseña
-  if (contra !== repite_contra) {
-    return res.render("registro.hbs", { titulo: "Registro", error: "Las contraseñas no coinciden" });
-  }
- 
-  try {
-    // encriptar contraseña
-    const hash = await bcrypt.hash(contra, 10);
-
-    // insertar en la base de datos
-    await connection.query(
-      //? evita inyeccion sql
-      "INSERT INTO usuarios (nombre, correo, contra) VALUES (?, ?, ?)",
-      [nombre, correo, hash]
-    );
-
-    res.redirect('/login');
-
-  } catch (err) {
-    console.error("Error al registrar usuario:", err);
-    res.render("registro.hbs", { titulo: "Registro", error: "El correo ya está en uso o error interno" });
-  }
-});
+servidor.post("/registro", validaciones);
 
 servidor.get('/login', (req, res) => {
   res.render("login.hbs", { titulo: "Login" });
 });
 
-let juegos = [
-  { id: 1, nombre: "Juego 1", precio: 650, descripcion: "Descripción 1", imagen: "zteam.png" },
-  { id: 2, nombre: "Juego 2", precio: 800, descripcion: "Descripción 2", imagen: "zteam.png" },
-  { id: 3, nombre: "Juego 3", precio: 900, descripcion: "Descripción 3", imagen: "zteam.png" },
-  { id: 4, nombre: "Juego 4", precio: 1000, descripcion: "Descripción 4", imagen: "zteam.png" },
-  { id: 5, nombre: "Juego 5", precio: 1100, descripcion: "Descripción 5", imagen: "zteam.png" }
-];
 
-/* ignorar lo de menu y carrito
-const menu = [
-  { nombre: "Inicio", ruta: "/", icono:"" },
-  { nombre: "Nuevo Juego", ruta: "/nuevo", icono:"" }
+servidor.post('/login', async (req, res) => {
+  const { usuario, contra } = req.body;
+  console.log(req.body); 
+});
+
+let juegos = [
+  { id: 1, nombre: "Juego 1", precio: 650, descripcion: "Descripción 1", imagen: "/imagenes/zteam.png" },
+  { id: 2, nombre: "Juego 2", precio: 800, descripcion: "Descripción 2", imagen: "/imagenes/zteam.png" },
+  { id: 3, nombre: "Juego 3", precio: 900, descripcion: "Descripción 3", imagen: "/imagenes/zteam.png" },
+  { id: 4, nombre: "Juego 4", precio: 1000, descripcion: "Descripción 4", imagen: "/imagenes/zteam.png" },
+  { id: 5, nombre: "Juego 5", precio: 1100, descripcion: "Descripción 5", imagen: "/imagenes/zteam.png" }
 ];
-const carrito = [
-  { id: 1, nombre: "Juego 1", precio: 650, cantidad: 2 }
-]; 
-*/
 
 servidor.get('/', (req, res) => {
   //cuando renderiza index.hbs le pasa un objeto que muestra los juegos
@@ -93,6 +48,11 @@ servidor.post('/nuevo', (req, res) => {
   res.redirect('/');
   //console.log(req.body);
 });
+
+servidor.get('/perfil', (req, res) => {
+  res.render('perfil', { titulo: 'Perfil' });
+});
+
 //se define una ruta con un parámetro dinámico :id
 //eso significa que si el usuario accede a /1 o /3, express extrae ese valor de la url y lo
 //guarda en req.params, que es un objeto de js.  

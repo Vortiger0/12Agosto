@@ -9,7 +9,8 @@ const connection = await mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'Zteam'
+  database: 'Zteam',
+  port: 3307
 });
 
 console.log('Conexión exitosa a la base de datos');
@@ -23,6 +24,8 @@ servidor.use(express.static(publicPath));
 servidor.use(express.json());
 servidor.use(express.urlencoded({ extended: true }));
 servidor.use(express.static(path.join(__dirname,"node_modules/bootstrap/dist")));
+servidor.use('/fontawesome', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free')));
+
 
 let pagina = path.join(__dirname, "views");
 servidor.set("views", pagina);
