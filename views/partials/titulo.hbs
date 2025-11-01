@@ -48,9 +48,16 @@
 
             <script src="/js/bootstrap.bundle.min.js"></script>
             <script>
-            document.getElementById('confirmLogout').onclick = function() {
-            window.location.href = '/login';
-            };
+                document.getElementById('confirmLogout').onclick = function() {
+                // Hacer petición al endpoint de logout
+                fetch('/logout', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                }).then(() => {
+                    window.location.href = '/login';
+                });
+             };
+
             </script>
         <h1 class="el_titulo">Zteam </h1>
         <nav class="menu"> 
