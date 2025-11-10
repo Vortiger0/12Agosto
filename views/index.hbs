@@ -13,6 +13,7 @@
             <img src="{{imagen}}" alt="" class="img1">
             <h2>{{nombre}}</h2>
             <h3>{{precio}}$</h3>
+
         <div class="d-grid gap-3 mt-2">
             <a href="/{{id}}" class="btn btn-info btn-sm">Ver detalles</a>
             <a href="/{{id}}/editar" class="btn btn-info btn-sm">Editar</a>
@@ -22,6 +23,19 @@
         </div>
         </div>
         {{/each}}
+
+        <!-- comprueba si hay juegos, de no haberlos mostrará el mensaje de abajo -->
+        {{#if juegos.length}}
+            {{#each juegos}}
+   
+            {{/each}}
+        {{else}}
+            <div class="alert alert-dark text-center m-5 p-5">
+                <h4>Actualmente no tienes juegos</h4>
+                <br>
+                <p>Puedes agregar uno desde la opción "Nuevo juego"</p>
+            </div>
+        {{/if}}
     </div>
   
 </body>
