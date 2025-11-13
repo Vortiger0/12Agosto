@@ -1,37 +1,44 @@
-import express from 'express';
+import express from 'express'; 
 import hbs from 'hbs';
 import path from 'path'
-import { fileURLToPath } from 'url'
-import mysql from 'mysql2/promise';
-import session from 'express-session';
+import { fileURLToPath } from 'url' 
+import mysql from 'mysql2/promise'; 
+import session from 'express-session'; 
+import MySQLStoreFactory from 'express-mysql-session';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 
-const connection = await mysql.createConnection({
+const dbConfig = {
   host: 'localhost',
-  user: 'root',
+  user: process.env.user,
   password: process.env.contra,
   database: process.env.DB,
-  port: 3307
-});
+  port: process.env.port
+};
 
+const connection = await mysql.createConnection(dbConfig);
 console.log('Conexión exitosa a la base de datos');
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const publicPath = path.join(__dirname, "public");
-const servidor = express()
+const MySQLStoreSession = MySQLStoreFactory(session);
+const sessionStore = new MySQLStoreSession(dbConfig);
+
+const __filename = fileURLToPath(import.meta.url) 
+const __dirname = path.dirname(__filename) 
+const publicPath = path.join(__dirname, "public"); 
+const servidor = express() 
 
 
-servidor.use(express.static(publicPath));
-servidor.use(express.json());
-servidor.use(express.urlencoded({ extended: true }));
+servidor.use(express.static(publicPath)); //para servir archivos estáticos desde la carpeta public
+servidor.use(express.json()); //para leer datos en formato json
+servidor.use(express.urlencoded({ extended: true })); //para poder leer datos de formularios
 servidor.use(express.static(path.join(__dirname,"node_modules/bootstrap/dist")));
 
 
 servidor.use(session({
+    key: process.env.key, //nombre de la cookie de sesión
+    store: sessionStore, //almacenamiento de sesiones en la base de datos
     secret: process.env.SESSION_SECRET, //clave secreta para firmar la cookie de sesión
     resave: false, // no guarda la sesión si el usuario no ha hecho cambios
     saveUninitialized: false, // en true crea la sesión sin login. En falso es necesario el login
