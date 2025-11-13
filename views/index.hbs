@@ -8,6 +8,7 @@
 <body>
     {{> titulo }}
     <div class="ProductosIndex">
+        {{#if juegos.length}}
         {{#each juegos}}
         <div class="productos">
             <img src="{{imagen}}" alt="" class="img1">
@@ -25,10 +26,7 @@
         {{/each}}
 
         <!-- comprueba si hay juegos, de no haberlos mostrará el mensaje de abajo -->
-        {{#if juegos.length}}
-            {{#each juegos}}
-   
-            {{/each}}
+        
         {{else}}
             <div class="alert alert-dark text-center m-5 p-5">
                 <h4>Actualmente no tienes juegos</h4>

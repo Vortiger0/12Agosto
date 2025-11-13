@@ -29,23 +29,25 @@ servidor.use(express.static(publicPath));
 servidor.use(express.json());
 servidor.use(express.urlencoded({ extended: true }));
 servidor.use(express.static(path.join(__dirname,"node_modules/bootstrap/dist")));
-servidor.use('/fontawesome', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free')));
+
 
 servidor.use(session({
     secret: process.env.SESSION_SECRET, //clave secreta para firmar la cookie de sesión
     resave: false, // no guarda la sesión si el usuario no ha hecho cambios
     saveUninitialized: false, // en true crea la sesión sin login. En falso es necesario el login
-    cookie: { maxAge: 86400000 } //mide cuanto dura la sesión en milisegundos, aquí 1 día
+    cookie: { maxAge: 86400000, 
+      httpOnly: true //para evitar que la cookie sea accesible via js
+     } 
 }));
 
 
-let pagina = path.join(__dirname, "views");
+const pagina = path.join(__dirname, "views");
 servidor.set("views", pagina);
 servidor.set("view engine", "hbs");
 hbs.registerPartials(path.join(__dirname, '/views/partials'));
 
 
-servidor.listen(4000);
+servidor.listen(80);
 
 export {
     servidor,

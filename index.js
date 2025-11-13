@@ -61,7 +61,6 @@ servidor.post('/nuevo', protegerRuta, async (req, res) => {
 });
 
 
-
 servidor.get('/:id', protegerRuta, async (req, res) => {
     try {
         const [juegos] = await connection.query('SELECT * FROM juegos WHERE id = ?', [req.params.id]);

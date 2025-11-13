@@ -18,13 +18,13 @@ export async function loginUsuario(req, res) {
 
     const usuario = resultado[0];
 
-    // Verificar la contraseña
+    // Verificar la contra
     const contraseñaValida = await bcrypt.compare(contra, usuario.contra);
     if (!contraseñaValida) {
       return res.render("login.hbs", { error: "Contraseña incorrecta" });
     }
 
-    // Guardar información del usuario en la sesión
+    // Guardar info del usuario en la sesión
     req.session.usuario = {
       id: usuario.id,
       nombre: usuario.nombre,
